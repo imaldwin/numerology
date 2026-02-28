@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Numerology Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 32px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 12px;
+            -webkit-appearance: none;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .score {
+            font-size: 56px;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .pairs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        
+        .pair {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pair.lucky {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            color: #10b981;
+        }
+        
+        .pair.unlucky {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .element-bar {
+            display: flex;
+            height: 48px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        
+        .element-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 40px;
+        }
+        
+        .water { background: #3b82f6; }
+        .fire { background: #ef4444; }
+        .wood { background: #10b981; }
+        .metal { background: #9ca3af; }
+        .earth { background: #f59e0b; }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        
+        .compatibility-result {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .compatibility-score {
+            font-size: 72px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .number-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .number-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .number-value {
+            font-family: monospace;
+            font-size: 16px;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 Numerology</h1>
+            <p class="subtitle">Chinese Eight Star System</p>
+        </header>
+
+        <div class="card">
+            <div class="card-title">📊 Analyze Number</div>
+            <input type="text" id="numberInput" placeholder="Enter number (e.g., 13812345678)">
+            <select id="numberType">
+                <option value="phone">📱 Phone Number</option>
+                <option value="bank">🏦 Bank Account</option>
+                <option value="ic">🆔 ID Number</option>
+                <option value="date">📅 Date of Birth</option>
+            </select>
+            <button onclick="analyzeNumber()">Analyze</button>
+            <div id="analysisResult" class="hidden"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">💕 Compatibility Check</div>
+            <input type="text" id="compat1" placeholder="Your number">
+            <input type="text" id="compat2" placeholder="Partner number">
+            <button onclick="checkCompatibility()">Check Match</button>
+            <div id="compatResult" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // Star database
+        const starDatabase = {
+            tianyi: {
+                name: "天医",
+                english: "Heavenly Doctor",
+                aspect: "Wealth & Marriage",
+                lucky: true,
+                pairs: ["13", "31", "68", "86", "49", "94", "27", "72"],
+                description: "Primary wealth star. Attracts money and good relationships."
+            },
+            yannian: {
+                name: "延年",
+                english: "Longevity",
+                aspect: "Career & Health",
+                lucky: true,
+                pairs: ["19", "91", "78", "87", "34", "43", "26", "62"],
+                description: "Career success through discipline and leadership."
+            },
+            shengqi: {
+                name: "生气",
+                english: "Life Energy",
+                aspect: "Noble People",
+                lucky: true,
+                pairs: ["14", "41", "67", "76", "39", "93", "28", "82"],
+                description: "Natural charisma. Attracts helpful people."
+            },
+            fuwei: {
+                name: "伏位",
+                english: "Position",
+                aspect: "Persistence",
+                lucky: true,
+                pairs: ["11", "22", "88", "99", "66", "77", "33", "44"],
+                description: "Stability and consistency. Good for long-term planning."
+            },
+            jueming: {
+                name: "绝命",
+                english: "Death/Ending",
+                aspect: "Investment & Risk",
+                lucky: false,
+                pairs: ["12", "21", "69", "96", "48", "84", "37", "73"],
+                description: "EXTREME RISK. Volatile investments and emotions."
+            },
+            huohai: {
+                name: "祸害",
+                english: "Disaster",
+                aspect: "Eloquence & Conflict",
+                lucky: false,
+                pairs: ["17", "71", "89", "98", "46", "64", "23", "32"],
+                description: "Good speaker but argumentative. Health issues."
+            },
+            wugui: {
+                name: "五鬼",
+                english: "Five Ghosts",
+                aspect: "Wisdom & Chaos",
+                lucky: false,
+                pairs: ["18", "81", "79", "97", "36", "63", "24", "42"],
+                description: "Intelligent but financially unstable."
+            },
+            liusha: {
+                name: "六煞",
+                english: "Six Killings",
+                aspect: "EQ & Romance",
+                lucky: false,
+                pairs: ["16", "61", "47", "74", "38", "83", "29", "92"],
+                description: "Charming but emotional. Relationship-focused spending."
+            }
+        };
+
+        // Five elements
+        const fiveElements = {
+            "1": "Water", "6": "Water",
+            "2": "Fire", "7": "Fire",
+            "3": "Wood", "8": "Wood",
+            "4": "Metal", "9": "Metal",
+            "5": "Earth", "0": "Earth"
+        };
+
+        const elementColors = {
+            "Water": "#3b82f6",
+            "Fire": "#ef4444",
+            "Wood": "#10b981",
+            "Metal": "#9ca3af",
+            "Earth": "#f59e0b"
+        };
+
+        function findStar(pair) {
+            for (let key in starDatabase) {
+                if (starDatabase[key].pairs.includes(pair)) {
+                    return { key, ...starDatabase[key] };
+                }
+            }
+            return null;
+        }
+
+        function analyzeNumber() {
+            const input = document.getElementById('numberInput').value;
+            const clean = input.replace(/\D/g, '');
+            
+            if (clean.length < 2) {
+                alert('Please enter at least 2 digits');
+                return;
+            }
+
+            // Analyze pairs
+            const pairs = [];
+            for (let i = 0; i < clean.length - 1; i++) {
+                const pair = clean.substring(i, i + 2);
+                const star = findStar(pair);
+                pairs.push({ pair, position: i, star });
+            }
+
+            // Count lucky/unlucky
+            const luckyPairs = pairs.filter(p => p.star?.lucky);
+            const unluckyPairs = pairs.filter(p => p.star && !p.star.lucky);
+            const totalStarPairs = luckyPairs.length + unluckyPairs.length;
+            const luckyPercentage = totalStarPairs > 0 ? Math.round((luckyPairs.length / totalStarPairs) * 100) : 0;
+
+            // Analyze elements
+            const elementCount = {};
+            for (let digit of clean) {
+                const element = fiveElements[digit];
+                if (element) {
+                    elementCount[element] = (elementCount[element] || 0) + 1;
+                }
+            }
+
+            // Find dominant star
+            const starCount = {};
+            pairs.forEach(p => {
+                if (p.star) {
+                    starCount[p.star.key] = (starCount[p.star.key] || 0) + 1;
+                }
+            });
+            const dominantStar = Object.entries(starCount).sort((a, b) => b[1] - a[1])[0];
+            const dominantStarData = dominantStar ? starDatabase[dominantStar[0]] : null;
+
+            // Generate HTML
+            let html = '<div class="result">';
+
+            // Score
+            const scoreColor = luckyPercentage > 50 ? '#10b981' : luckyPercentage > 30 ? '#fbbf24' : '#ef4444';
+            html += `<div class="score" style="color: ${scoreColor}">${luckyPercentage}%</div>`;
+            html += '<div style="text-align: center; color: #94a3b8; margin-bottom: 20px;">Lucky Energy</div>';
+
+            // Stats
+            html += '<div class="stats">';
+            html += `<div class="stat-box"><div class="stat-value" style="color: #10b981">${luckyPairs.length}</div><div class="stat-label">🍀 Lucky</div></div>`;
+            html += `<div class="stat-box"><div class="stat-value" style="color: #ef4444">${unluckyPairs.length}</div><div class="stat-label">⚠️ Unlucky</div></div>`;
+            html += '</div>';
+
+            // Dominant star
+            if (dominantStarData) {
+                html += `<div style="margin-top: 20px; padding: 16px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; border-left: 3px solid #fbbf24;">`;
+                html += `<div style="color: #fbbf24; font-weight: 600; margin-bottom: 4px;">Dominant: ${dominantStarData.name} (${dominantStarData.english})</div>`;
+                html += `<div style="color: #94a3b8; font-size: 14px;">${dominantStarData.aspect}</div>`;
+                html += `</div>`;
+            }
+
+            // Pairs
+            if (pairs.some(p => p.star)) {
+                html += '<div style="margin-top: 20px;"><div style="color: #fbbf24; font-weight: 600; margin-bottom: 12px;">Number Pairs:</div><div class="pairs-grid">';
+                pairs.forEach(p => {
+                    if (p.star) {
+                        const luckyClass = p.star.lucky ? 'lucky' : 'unlucky';
+                        html += `<div class="pair ${luckyClass}">${p.pair}<br><small>${p.star.name}</small></div>`;
+                    }
+                });
+                html += '</div></div>';
+            }
+
+            // Elements
+            if (Object.keys(elementCount).length > 0) {
+                html += '<div style="margin-top: 20px;"><div style="color: #fbbf24; font-weight: 600; margin-bottom: 12px;">Five Elements:</div>';
+                html += '<div class="element-bar">';
+                const totalDigits = Object.values(elementCount).reduce((a, b) => a + b, 0);
+                for (let [element, count] of Object.entries(elementCount)) {
+                    const percentage = (count / totalDigits * 100).toFixed(0);
+                    html += `<div class="element-segment ${element.toLowerCase()}" style="width: ${percentage}%">${element}</div>`;
+                }
+                html += '</div></div>';
+            }
+
+            html += '</div>';
+            document.getElementById('analysisResult').innerHTML = html;
+            document.getElementById('analysisResult').classList.remove('hidden');
+        }
+
+        function checkCompatibility() {
+            const num1 = document.getElementById('compat1').value.replace(/\D/g, '');
+            const num2 = document.getElementById('compat2').value.replace(/\D/g, '');
+            
+            if (num1.length < 2 || num2.length < 2) {
+                alert('Please enter both numbers');
+                return;
+            }
+
+            // Analyze both numbers
+            function getLuckyCount(num) {
+                let count = 0;
+                for (let i = 0; i < num.length - 1; i++) {
+                    const pair = num.substring(i, i + 2);
+                    const star = findStar(pair);
+                    if (star?.lucky) count++;
+                }
+                return count;
+            }
+
+            const lucky1 = getLuckyCount(num1);
+            const lucky2 = getLuckyCount(num2);
+
+            // Calculate score
+            let score = 50;
+            score += Math.min(lucky1, lucky2) * 10;
+            
+            // Check for shared stars
+            const stars1 = new Set();
+            const stars2 = new Set();
+            
+            for (let i = 0; i < num1.length - 1; i++) {
+                const star = findStar(num1.substring(i, i + 2));
+                if (star) stars1.add(star.key);
+            }
+            for (let i = 0; i < num2.length - 1; i++) {
+                const star = findStar(num2.substring(i, i + 2));
+                if (star) stars2.add(star.key);
+            }
+            
+            const shared = [...stars1].filter(s => stars2.has(s));
+            score += shared.length * 10;
+            
+            score = Math.max(0, Math.min(100, score));
+
+            // Generate result
+            const scoreColor = score > 60 ? '#10b981' : score > 40 ? '#fbbf24' : '#ef4444';
+            const scoreText = score > 80 ? 'Excellent Match!' : score > 60 ? 'Good Match' : score > 40 ? 'Average' : 'Challenging';
+
+            let html = '<div class="result compatibility-result">';
+            html += `<div class="compatibility-score" style="color: ${scoreColor}">${score}%</div>`;
+            html += `<div style="color: #94a3b8; font-size: 18px; margin-bottom: 20px;">${scoreText}</div>`;
+            
+            if (shared.length > 0) {
+                html += `<div style="color: #10b981; margin-bottom: 16px;">✨ ${shared.length} shared energy types</div>`;
+            }
+            
+            html += '<div class="number-compare">';
+            html += `<div class="number-box"><div class="number-value">${num1}</div><div style="color: #10b981; font-size: 20px; font-weight: 600;">🍀 ${lucky1}</div></div>`;
+            html += `<div class="number-box"><div class="number-value">${num2}</div><div style="color: #10b981; font-size: 20px; font-weight: 600;">🍀 ${lucky2}</div></div>`;
+            html += '</div>';
+            
+            html += '</div>';
+            
+            document.getElementById('compatResult').innerHTML = html;
+            document.getElementById('compatResult').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
